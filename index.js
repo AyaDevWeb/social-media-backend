@@ -80,9 +80,9 @@ connection()
         app.use("/api/comments", require("./routes/commentRoutes"));
 
         // Ruta de prueba
-        app.get("/ruta-prueba", (req, res) => {
-            return res.status(200).json({ id: 1, name: "Adriana" });
-        });
+        const testRoutes = require("./routes/testRoutes");
+        app.use("/api", testRoutes);
+
 
         // Manejo de errores
         app.use(errorHandler);
