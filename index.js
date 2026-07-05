@@ -1,3 +1,4 @@
+require("dotenv").config();
 const connection = require("./database/connection");
 const express = require("express");
 const cors = require("cors");
@@ -5,7 +6,6 @@ const errorHandler = require("./middlewares/errorHandler");
 const http = require("http");
 const { Server } = require("socket.io");
 const path = require("path");
-require("dotenv").config(); // ✔ Carga única
 
 connection()
     .then(() => {
@@ -17,15 +17,15 @@ connection()
 
         console.log("¡API Node para Red Social arrancada!");
 
-        // 🌐 CORS para producción
+        // CORS
         const corsOptions = {
-            origin: "*", // ✔ Permite Cloudflare Pages
+            origin: "*",
             methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
             credentials: true
         };
         app.use(cors(corsOptions));
 
-        // ⚡ WebSockets
+        // WebSockets
         const io = new Server(server, {
             cors: {
                 origin: "*",
