@@ -29,6 +29,7 @@ connection()
             credentials: true
         };
         app.use(cors(corsOptions));
+        app.options("*", cors(corsOptions));
 
         // ⭐ WebSockets con CORS correcto
         const io = new Server(server, {
