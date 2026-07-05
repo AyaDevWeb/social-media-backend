@@ -13,8 +13,12 @@ const jwt = require("jsonwebtoken");
  * @returns {void}
  */
 const verifyToken = (req, res, next) => {
-    const raw = req.headers['authorization']?.replace(/['"]+/g, '');
-    const token = raw?.startsWith("Bearer ") ? raw.slice(7) : raw;
+    let raw = req.headers['authorization']?.replace(/['"]+/g, '');
+    let token = raw?.startsWith("Bearer ") ? raw.slice(7) : raw;
+
+    if (!token && req.cookies?.token) {
+        token = req.cookies.token;
+    }
 
     if (!token) {
         return res.status(403).send({

@@ -163,6 +163,13 @@ const login = (req, res) => {
             // Generar el token
             const token = jwt.generateToken(user);
 
+            // CONFIGURAR COOKIE PARA CLOUDFLARE + RENDER
+            res.cookie("token", token, {
+                httpOnly: true,
+                secure: true,        // obligatorio en HTTPS
+                sameSite: "none"     // obligatorio para dominios distintos
+            });
+
             // Responder con el token y datos del usuario
             return res.status(200).send({
                 status: "success",
@@ -175,6 +182,13 @@ const login = (req, res) => {
                 token
             });
         })
+        .catch(err => {
+            return res.status(500).send({
+                status: "error",
+                message: "Error en el servidor",
+                err
+            });
+        });
 };
 
 /**

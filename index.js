@@ -6,6 +6,7 @@ const errorHandler = require("./middlewares/errorHandler");
 const http = require("http");
 const { Server } = require("socket.io");
 const path = require("path");
+const cookieParser = require("cookie-parser");
 
 connection()
     .then(() => {
@@ -17,19 +18,27 @@ connection()
 
         console.log("¡API Node para Red Social arrancada!");
 
-        // CORS
+        // ⭐ CORS CORRECTO PARA CLOUDFLARE + RENDER
         const corsOptions = {
-            origin: "*",
+            origin: [
+                "http://localhost:5173",
+                "https://social-media-frontend.ayadev-web.workers.dev"
+            ],
             methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+            allowedHeaders: ["Content-Type", "Authorization"],
             credentials: true
         };
         app.use(cors(corsOptions));
 
-        // WebSockets
+        // ⭐ WebSockets con CORS correcto
         const io = new Server(server, {
             cors: {
-                origin: "*",
-                methods: ["GET", "POST"]
+                origin: [
+                    "http://localhost:5173",
+                    "https://social-media-frontend.ayadev-web.workers.dev"
+                ],
+                methods: ["GET", "POST"],
+                credentials: true
             }
         });
 
@@ -72,6 +81,8 @@ connection()
         // Archivos estáticos
         app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+        app.use(cookieParser());
+
         // Rutas
         app.use("/api/user", require("./routes/userRoutes"));
         app.use("/api/chat", require("./routes/chatRoutes"));
@@ -82,7 +93,6 @@ connection()
         // Ruta de prueba
         const testRoutes = require("./routes/testRoutes");
         app.use("/api", testRoutes);
-
 
         // Manejo de errores
         app.use(errorHandler);
